@@ -1,0 +1,613 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Banda Studios — Web Design for Small Businesses</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #080808;
+    --surface: #111111;
+    --surface2: #181818;
+    --border: #1f1f1f;
+    --accent: #e8ff47;
+    --text: #f0ede8;
+    --muted: #555;
+    --muted2: #333;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Mono', monospace;
+    font-size: 13px;
+    font-weight: 300;
+    overflow-x: hidden;
+  }
+
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    padding: 24px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid transparent;
+    transition: all 0.3s;
+  }
+
+  nav.scrolled {
+    background: rgba(8,8,8,0.95);
+    backdrop-filter: blur(12px);
+    border-color: var(--border);
+    padding: 16px 48px;
+  }
+
+  .nav-logo {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 24px;
+    letter-spacing: 3px;
+    color: var(--text);
+    text-decoration: none;
+  }
+
+  .nav-logo span { color: var(--accent); }
+
+  .nav-right { display: flex; align-items: center; gap: 40px; }
+
+  .nav-links { display: flex; gap: 32px; list-style: none; }
+
+  .nav-links a {
+    text-decoration: none;
+    color: var(--muted);
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--text); }
+
+  .nav-cta {
+    background: var(--accent);
+    color: #000;
+    text-decoration: none;
+    padding: 10px 20px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 1px;
+    font-weight: 500;
+    transition: background 0.2s;
+  }
+
+  .nav-cta:hover { background: #fff; }
+
+  .hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-bg-text {
+    position: absolute;
+    top: 50%;
+    left: -20px;
+    transform: translateY(-50%);
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: clamp(180px, 22vw, 320px);
+    color: rgba(255,255,255,0.02);
+    letter-spacing: -5px;
+    pointer-events: none;
+    white-space: nowrap;
+    line-height: 1;
+  }
+
+  .hero-tag {
+    font-size: 11px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin-bottom: 28px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.2s forwards;
+  }
+
+  .hero-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(64px, 9vw, 130px);
+    font-weight: 400;
+    line-height: 0.92;
+    letter-spacing: -3px;
+    color: var(--text);
+    margin-bottom: 48px;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.4s forwards;
+  }
+
+  .hero-title em { font-style: italic; color: var(--accent); }
+
+  .hero-bottom {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    opacity: 0;
+    animation: fadeUp 0.7s 0.6s forwards;
+  }
+
+  .hero-desc { max-width: 380px; color: var(--muted); line-height: 1.8; font-size: 13px; }
+  .hero-desc strong { color: var(--text); font-weight: 400; }
+
+  .hero-actions { display: flex; flex-direction: column; align-items: flex-end; gap: 16px; }
+
+  .btn-main {
+    background: var(--accent);
+    color: #000;
+    text-decoration: none;
+    padding: 16px 40px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    font-weight: 500;
+    display: inline-block;
+    transition: background 0.2s, transform 0.2s;
+  }
+
+  .btn-main:hover { background: #fff; transform: translateY(-2px); }
+
+  .hero-scroll { font-size: 10px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); }
+
+  .hero-line {
+    position: absolute;
+    right: 48px; top: 50%;
+    width: 1px; height: 120px;
+    background: linear-gradient(to bottom, transparent, var(--accent), transparent);
+    transform: translateY(-50%);
+    opacity: 0;
+    animation: fadeIn 1s 1s forwards;
+  }
+
+  .ticker {
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 0;
+    overflow: hidden;
+    background: var(--surface);
+  }
+
+  .ticker-track {
+    display: inline-flex;
+    animation: marquee 25s linear infinite;
+    white-space: nowrap;
+  }
+
+  .ticker-item { font-size: 11px; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); padding: 0 32px; }
+  .ticker-item.accent { color: var(--accent); }
+
+  .services {
+    padding: 120px 48px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .services-layout {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .services-sticky { position: sticky; top: 120px; }
+
+  .section-num {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 11px;
+    letter-spacing: 3px;
+    color: var(--accent);
+    margin-bottom: 12px;
+  }
+
+  .section-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(40px, 5vw, 64px);
+    font-weight: 400;
+    line-height: 1.0;
+    letter-spacing: -1px;
+  }
+
+  .section-title em { font-style: italic; color: var(--accent); }
+
+  .services-desc { color: var(--muted); line-height: 1.8; margin-top: 24px; font-size: 13px; }
+  .services-desc strong { color: var(--text); font-weight: 400; }
+
+  .service-list { margin-top: 48px; }
+
+  .service-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 24px 0;
+    border-bottom: 1px solid var(--border);
+    transition: padding-left 0.3s;
+  }
+
+  .service-row:hover { padding-left: 12px; }
+  .service-row:hover .service-row-name { color: var(--accent); }
+  .service-row-left { display: flex; align-items: center; gap: 20px; }
+  .service-row-num { font-size: 10px; letter-spacing: 2px; color: var(--muted2); width: 24px; }
+  .service-row-name { font-family: 'DM Serif Display', serif; font-size: 22px; transition: color 0.2s; }
+  .service-row-price { font-size: 11px; letter-spacing: 1px; color: var(--muted); }
+
+  .niches { padding: 120px 48px; }
+
+  .niches-header { margin-bottom: 64px; }
+
+  .niches-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .niche-card {
+    background: var(--surface);
+    padding: 40px 32px;
+    border-bottom: 2px solid transparent;
+    transition: border-color 0.3s, background 0.3s;
+  }
+
+  .niche-card:hover { background: var(--surface2); border-bottom-color: var(--accent); }
+
+  .niche-icon { font-size: 28px; margin-bottom: 20px; display: block; }
+  .niche-name { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 12px; }
+  .niche-desc { color: var(--muted); font-size: 12px; line-height: 1.8; }
+
+  .process {
+    padding: 120px 48px;
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+  }
+
+  .process-steps {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2px;
+    margin-top: 64px;
+  }
+
+  .process-step {
+    background: var(--bg);
+    padding: 48px 32px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .process-step::before {
+    content: attr(data-num);
+    position: absolute;
+    top: -20px; right: 16px;
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 100px;
+    color: rgba(232,255,71,0.04);
+    line-height: 1;
+  }
+
+  .process-step-num { font-family: 'Bebas Neue', sans-serif; font-size: 13px; letter-spacing: 3px; color: var(--accent); margin-bottom: 20px; }
+  .process-step-title { font-family: 'DM Serif Display', serif; font-size: 22px; margin-bottom: 16px; line-height: 1.2; }
+  .process-step-desc { color: var(--muted); font-size: 12px; line-height: 1.8; }
+
+  .cta {
+    padding: 160px 48px;
+    position: relative;
+    overflow: hidden;
+    text-align: center;
+    border-top: 1px solid var(--border);
+  }
+
+  .cta::before {
+    content: '';
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(232,255,71,0.06) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .cta-eyebrow { font-size: 11px; letter-spacing: 4px; text-transform: uppercase; color: var(--accent); margin-bottom: 24px; }
+
+  .cta-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: clamp(48px, 7vw, 96px);
+    font-weight: 400;
+    line-height: 0.95;
+    letter-spacing: -2px;
+    margin-bottom: 48px;
+  }
+
+  .cta-title em { font-style: italic; color: var(--accent); }
+
+  .cta-sub { color: var(--muted); font-size: 13px; line-height: 1.8; max-width: 440px; margin: 0 auto 48px; }
+
+  footer {
+    background: var(--surface);
+    border-top: 1px solid var(--border);
+    padding: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 20px; letter-spacing: 3px; }
+  .footer-logo span { color: var(--accent); }
+  .footer-copy { font-size: 11px; color: var(--muted); letter-spacing: 1px; }
+  .footer-contact { font-size: 11px; color: var(--muted); text-align: right; }
+  .footer-contact a { color: var(--accent); text-decoration: none; }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+
+  .reveal { opacity: 0; transform: translateY(28px); transition: opacity 0.7s, transform 0.7s; }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
+
+  @media (max-width: 768px) {
+    nav { padding: 20px 24px; }
+    nav.scrolled { padding: 14px 24px; }
+    .nav-links { display: none; }
+    .hero { padding: 0 24px 60px; }
+    .hero-title { font-size: 64px; letter-spacing: -2px; }
+    .hero-bottom { flex-direction: column; align-items: flex-start; gap: 32px; }
+    .hero-actions { align-items: flex-start; }
+    .services { padding: 80px 24px; }
+    .services-layout { grid-template-columns: 1fr; gap: 48px; }
+    .services-sticky { position: static; }
+    .niches { padding: 80px 24px; }
+    .niches-grid { grid-template-columns: 1fr; }
+    .process { padding: 80px 24px; }
+    .process-steps { grid-template-columns: 1fr 1fr; }
+    .cta { padding: 100px 24px; }
+    footer { padding: 32px 24px; flex-direction: column; gap: 24px; text-align: center; }
+    .footer-contact { text-align: center; }
+  }
+</style>
+</head>
+<body>
+
+<nav id="nav">
+  <a href="#" class="nav-logo">BANDA<span>.</span></a>
+  <div class="nav-right">
+    <ul class="nav-links">
+      <li><a href="#services">Services</a></li>
+      <li><a href="#we-build">We Build For</a></li>
+      <li><a href="#process">Process</a></li>
+    </ul>
+    <a href="#contact" class="nav-cta">Get a Site &rarr;</a>
+  </div>
+</nav>
+
+<section class="hero">
+  <div class="hero-bg-text">BANDA</div>
+  <div class="hero-line"></div>
+  <div class="hero-tag">Web Design &middot; Holland, MI</div>
+  <h1 class="hero-title">Websites that<br>make people <em>stop</em><br>scrolling.</h1>
+  <div class="hero-bottom">
+    <p class="hero-desc">
+      <strong>Banda Studios builds fast, modern websites for local businesses.</strong><br><br>
+      You get a site that looks better than your competitors, loads in under 2 seconds, and actually brings in customers.
+    </p>
+    <div class="hero-actions">
+      <a href="#contact" class="btn-main">Get a Site &rarr;</a>
+      <span class="hero-scroll">&darr; Scroll to explore</span>
+    </div>
+  </div>
+</section>
+
+<div class="ticker">
+  <div class="ticker-track">
+    <span class="ticker-item accent">Web Design</span>
+    <span class="ticker-item">&middot;</span>
+    <span class="ticker-item">Local Business Specialists</span>
+    <span class="ticker-item">&middot;</span>
+    <span class="ticker-item accent">Holland, MI</span>
+    <span class="ticker-item">&middot;</span>
+    <span class="ticker-item">Fast Delivery</span>
+    <span class="ticker-item">&middot;</span>
+    <span class="ticker-item accent">SEO Ready</span>
+    <span class="ticker-item">&middot;</span>
+    <span class="ticker-item">Mobile First</span>
+    <span class="ticker-item">&middot;</span>
+    <span class="ticker-item accent">Custom Code</span>
+    <span class="ticker-item">&middot;</span>
+    <span class="ticker-item">West Michigan</span>
+    <span class="ticker-item">&middot;</span>
+    <span class="ticker-item accent">Web Design</span>
+    <span class="ticker-item">&middot;</span>
+    <span class="ticker-item">Local Business Specialists</span>
+    <span class="ticker-item">&middot;</span>
+    <span class="ticker-item accent">Holland, MI</span>
+    <span class="ticker-item">&middot;</span>
+    <span class="ticker-item">Fast Delivery</span>
+    <span class="ticker-item">&middot;</span>
+    <span class="ticker-item accent">SEO Ready</span>
+    <span class="ticker-item">&middot;</span>
+    <span class="ticker-item">Mobile First</span>
+    <span class="ticker-item">&middot;</span>
+    <span class="ticker-item accent">Custom Code</span>
+    <span class="ticker-item">&middot;</span>
+    <span class="ticker-item">West Michigan</span>
+    <span class="ticker-item">&middot;</span>
+  </div>
+</div>
+
+<section class="services" id="services">
+  <div class="services-layout">
+    <div class="services-sticky reveal">
+      <div class="section-num">01 &mdash; Services</div>
+      <h2 class="section-title">What you<br><em>get</em></h2>
+      <p class="services-desc">
+        <strong>Everything your business needs online.</strong> No bloated packages, no hidden fees. Fast, custom websites built for your customers &mdash; not a template library.
+      </p>
+      <a href="#contact" class="btn-main" style="margin-top:40px;display:inline-block">Get a Quote &rarr;</a>
+    </div>
+    <div class="service-list reveal">
+      <div class="service-row">
+        <div class="service-row-left">
+          <div class="service-row-num">01</div>
+          <div class="service-row-name">Website Build</div>
+        </div>
+        <div class="service-row-price">from $800</div>
+      </div>
+      <div class="service-row">
+        <div class="service-row-left">
+          <div class="service-row-num">02</div>
+          <div class="service-row-name">Landing Page</div>
+        </div>
+        <div class="service-row-price">from $500</div>
+      </div>
+      <div class="service-row">
+        <div class="service-row-left">
+          <div class="service-row-num">03</div>
+          <div class="service-row-name">Site Redesign</div>
+        </div>
+        <div class="service-row-price">from $600</div>
+      </div>
+      <div class="service-row">
+        <div class="service-row-left">
+          <div class="service-row-num">04</div>
+          <div class="service-row-name">Hosting &amp; Maintenance</div>
+        </div>
+        <div class="service-row-price">$125/mo</div>
+      </div>
+      <div class="service-row" style="border-bottom:none">
+        <div class="service-row-left">
+          <div class="service-row-num">05</div>
+          <div class="service-row-name">Pre-Built Templates</div>
+        </div>
+        <div class="service-row-price">from $39</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="niches" id="we-build">
+  <div class="niches-header reveal">
+    <div class="section-num">02 &mdash; Who We Build For</div>
+    <h2 class="section-title">Local businesses<br>that deserve <em>better</em></h2>
+  </div>
+  <div class="niches-grid">
+    <div class="niche-card reveal">
+      <span class="niche-icon">&#9986;&#65039;</span>
+      <div class="niche-name">Salons &amp; Spas</div>
+      <p class="niche-desc">Showcase your services, team, and booking link in a site that matches the quality of your work. First impressions start online.</p>
+    </div>
+    <div class="niche-card reveal" style="transition-delay:0.1s">
+      <span class="niche-icon">&#127374;</span>
+      <div class="niche-name">Restaurants &amp; Cafes</div>
+      <p class="niche-desc">Menus, hours, reservations, and your story &mdash; all in one fast-loading site that works on every phone. No more Google-only presence.</p>
+    </div>
+    <div class="niche-card reveal" style="transition-delay:0.2s">
+      <span class="niche-icon">&#128296;</span>
+      <div class="niche-name">Trades &amp; Services</div>
+      <p class="niche-desc">Plumbers, electricians, HVAC &mdash; your customers are searching right now. A clean, fast site with your number front and center wins the job.</p>
+    </div>
+    <div class="niche-card reveal" style="transition-delay:0.1s">
+      <span class="niche-icon">&#127973;</span>
+      <div class="niche-name">Health &amp; Wellness</div>
+      <p class="niche-desc">Chiropractors, therapists, fitness studios. Build trust before clients even walk in the door with a calm, professional online presence.</p>
+    </div>
+    <div class="niche-card reveal" style="transition-delay:0.2s">
+      <span class="niche-icon">&#128717;</span>
+      <div class="niche-name">Retail &amp; Boutiques</div>
+      <p class="niche-desc">Make your products look as good online as they do in store. Clean visuals, simple navigation, and a site that drives foot traffic.</p>
+    </div>
+    <div class="niche-card reveal" style="transition-delay:0.3s">
+      <span class="niche-icon">&#128188;</span>
+      <div class="niche-name">Professional Services</div>
+      <p class="niche-desc">Accountants, consultants, agencies. Your website should communicate authority and competence from the very first scroll.</p>
+    </div>
+  </div>
+</section>
+
+<section class="process" id="process">
+  <div class="reveal">
+    <div class="section-num">03 &mdash; How It Works</div>
+    <h2 class="section-title">From idea to<br><em>live site</em> in days</h2>
+  </div>
+  <div class="process-steps">
+    <div class="process-step reveal" data-num="1">
+      <div class="process-step-num">01</div>
+      <div class="process-step-title">You reach out</div>
+      <p class="process-step-desc">Tell me about your business &mdash; what you do, who your customers are, what you need. 15 minutes on a call is all it takes.</p>
+    </div>
+    <div class="process-step reveal" style="transition-delay:0.1s" data-num="2">
+      <div class="process-step-num">02</div>
+      <div class="process-step-title">I build a draft</div>
+      <p class="process-step-desc">You get a real working draft &mdash; not a mockup &mdash; within days. Most clients see something live before they have paid a cent.</p>
+    </div>
+    <div class="process-step reveal" style="transition-delay:0.2s" data-num="3">
+      <div class="process-step-num">03</div>
+      <div class="process-step-title">We refine it</div>
+      <p class="process-step-desc">Your feedback shapes the final site. Colors, copy, layout &mdash; we adjust until it feels exactly right for your brand and your customers.</p>
+    </div>
+    <div class="process-step reveal" style="transition-delay:0.3s" data-num="4">
+      <div class="process-step-num">04</div>
+      <div class="process-step-title">Go live</div>
+      <p class="process-step-desc">Your site goes live on your domain. I handle hosting, DNS, and SEO basics. You just share the link and start getting customers.</p>
+    </div>
+  </div>
+</section>
+
+<section class="cta" id="contact">
+  <div class="cta-eyebrow reveal">Let's build something</div>
+  <h2 class="cta-title reveal">Your business<br>deserves a<br><em>better site.</em></h2>
+  <p class="cta-sub reveal">Based in Holland, MI. Building for local businesses across West Michigan and remotely across the US. Want a custom site built around your brand? Reach out for a quote.</p>
+  <a href="mailto:hello@bandastudios.com" class="btn-main reveal">hello@bandastudios.com &rarr;</a>
+</section>
+
+<footer>
+  <div class="footer-logo">BANDA<span>.</span></div>
+  <div class="footer-copy">&copy; 2026 Banda Studios &middot; Holland, MI</div>
+  <div class="footer-contact">
+    <a href="mailto:hello@bandastudios.com">hello@bandastudios.com</a>
+  </div>
+</footer>
+
+<script>
+  const nav = document.getElementById('nav');
+  window.addEventListener('scroll', () => {
+    nav.classList.toggle('scrolled', window.scrollY > 60);
+  });
+
+  const reveals = document.querySelectorAll('.reveal');
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+        observer.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.1 });
+
+  reveals.forEach(r => observer.observe(r));
+</script>
+</body>
+</html>
